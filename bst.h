@@ -2,8 +2,6 @@
  *
  *
  *  AUTHOR: PKangu
- *  COPYRIGHT: 2013 PKangu
- *  USE: Educational purpose only
 */
 #ifndef bst
 #define bst
