@@ -62,7 +62,7 @@ tree_node* find_max(tree_node * root);
  * 
  * RETURNS: the node with the given value if exists or NULL
 */
-tree_node* find_node(tree_node *root, int *to_search);
+tree_node* find_node(tree_node *root, int to_search);
 
 /* Displays a node in a linear way */
 void display_node(tree_node *node);

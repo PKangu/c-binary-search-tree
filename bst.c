@@ -8,6 +8,30 @@
 #include <stdlib.h>
 #include "bst.h"
 
+/*-----------private methods-----------*/
+
+/*
+ * drops the given node from his parent if exists
+ *
+ * param *deleting: the node that has to be dropped
+*/
+void start_deleting(tree_node *deleting) {
+	if (deleting->parent) {
+		if (deleting->parent->left_child) {
+			if (deleting->parent->left_child->value == deleting->value) {
+				deleting->parent->left_child = NULL;
+			}
+		} 
+		if (deleting->parent->right_child) {
+			if (deleting->parent->right_child->value == deleting->value) {
+				deleting->parent->right_child = NULL;
+			}
+		}
+	}
+	
+}
+
+/*-----------public methods------------*/
 
 tree_node* new_node(int value) {
 	tree_node *n = malloc(sizeof(tree_node));
@@ -44,30 +68,30 @@ void insert_node (tree_node *root, tree_node *node) {
 }
 
 void delete_node(tree_node *root, int to_delete) {
-	
-	if (to_delete > root->value) {
-		delete_node(root->right_child, to_delete);
-	} else if (to_delete < root->value) {
-		delete_node(root->left_child, to_delete);
-	} else {
-		printf("trovato!");
-		if (root->left_child != NULL && root->right_child != NULL) {
-			tree_node *temp = root->right_child;
-			temp = find_min(temp);
-			root->value = temp->value;
-			temp->parent->left_child = NULL;
+	tree_node *deleting = find_node(root, to_delete);
+	if (deleting) {
+		if (deleting->left_child != NULL && deleting->right_child != NULL) {
+			tree_node *temp = find_min(deleting->right_child);
+			deleting->value = temp->value;
+			start_deleting(temp);
+			if (temp->right_child) {
+				insert_node(temp->parent, temp->right_child);
+			}
 			free(temp);
 			
-		} else if (root->right_child == NULL) {
-			root->value = root->left_child->value;
-			free(root->left_child);
-			root->left_child = NULL;
 		} else {
-			root->value = root->right_child->value;
-			free(root->right_child);
-			root->right_child = NULL;
-		}
+			start_deleting(deleting);
+			if (deleting->right_child == NULL && deleting->left_child != NULL) {
+				printf("deleting with left_child\n");
+				insert_node(deleting->parent, deleting->left_child);
+			} else if (deleting->left_child == NULL && deleting->right_child != NULL){
+				printf("deleting with right_child\n");
+				insert_node(deleting->parent, deleting->right_child);
+			}
+			free(deleting);
+		} 
 	}
+
 }
 
 tree_node* find_min(tree_node *root) {
@@ -86,15 +110,13 @@ tree_node* find_max(tree_node *root) {
 	}
 }
 
-tree_node* find_node(tree_node *root, int *to_search) {
-	if (*to_search == root->value) {
+tree_node* find_node(tree_node *root, int to_search) {
+	if (to_search == root->value) {
 		return root;
-	} else if (*to_search < root->value) {
+	} else if (to_search < root->value) {
 		return find_node(root->left_child, to_search);
-	} else if (*to_search > root->value) {
+	} else if (to_search > root->value) {
 		return find_node(root->right_child, to_search);
-	} else {
-		return NULL;
 	}
 }
 
