@@ -1,7 +1,8 @@
 /*
  *
  *
- *  AUTHOR: PKangu
+ * AUTHOR: PKangu
+ * THANKS TO: everlastingfire FOR: code testing and bug warnings
 */
 #ifndef bst
 #define bst
